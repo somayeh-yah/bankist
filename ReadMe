@@ -1,0 +1,9 @@
+# Bank application build with Javascript
+
+#Features
+
+- close account
+- log in
+- View transaction history
+- Check account balance
+- Transfer money between accounts
