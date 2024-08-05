@@ -49,6 +49,7 @@ const containerApp = document.querySelector(".app");
 const containerMovements = document.querySelector(".movements");
 const containerCreateCard = document.querySelector("#create_modal_container");
 const cardContainer = document.querySelector(".card_container");
+const overlay = document.getElementById("overlay");
 
 const btnLogin = document.querySelector(".login__btn");
 const btnCreate = document.querySelector(".create__btn");
@@ -66,7 +67,6 @@ const inputCloseUsername = document.querySelector(".form__input--user");
 const inputClosePin = document.querySelector(".form__input--pin");
 
 const displayMovements = function (movements, sort = false) {
- 
   containerMovements.innerHTML = " ";
 
   const movs = sort ? movements.slice().sort((a, b) => a - b) : movements;
@@ -108,14 +108,21 @@ btnCreate.addEventListener("click", function () {
     </div >
   `;
   containerCreateCard.classList.remove("hidden");
-
+  overlay.classList.remove('hidden');
   containerCreateCard.innerHTML = modalBox;
   
+
+
   document.querySelector(".close-modal").addEventListener("click", function () {
-    containerCreateCard.innerHTML = " ";
-   
-  });
+    containerCreateCard.classList.add('hidden');
+    overlay.classList.add('hidden');
+    
+   });
+  
 });
+
+
+
 
 const calcBalance = (account) => {
   account.balance = account.movements.reduce((acc, curMov) => acc + curMov, 0);
@@ -125,8 +132,8 @@ const calcBalance = (account) => {
 
 const displaySummaryIn = (account) => {
   const incomes = account.movements
-    .filter((mov) => mov > 0) 
-    .reduce((acc, mov) => acc + mov); 
+    .filter((mov) => mov > 0)
+    .reduce((acc, mov) => acc + mov);
   labelSumIn.textContent = `${incomes}€`;
 };
 
@@ -134,13 +141,13 @@ const displaySummeryOut = (account) => {
   const out = account.movements
     .filter((mov) => mov < 0)
     .reduce((acc, mov) => acc + mov, 0);
-  labelSumOut.textContent = `${Math.abs(out)}€`; 
+  labelSumOut.textContent = `${Math.abs(out)}€`;
 };
 
 const displaySummeryInterest = (account) => {
   const interest = account.movements
     .filter((mov) => mov > 0)
-    .map((mov) => (mov * account.interestRate) / 100) 
+    .map((mov) => (mov * account.interestRate) / 100)
     .filter((inte, i, arr) => {
       console.log(arr);
       return inte > 1;
@@ -150,14 +157,16 @@ const displaySummeryInterest = (account) => {
 };
 
 const errorMessage = (message) => {
-  const errMessage = `<p class= "err__message" > ${message}</P>`;
-   errorElement.classList.remove("hidden");
+  const errMessage = `<article class="error-container"><p class= "err__message" > ${message}</P>
+  <button class="close-error-message">X</button></article>
+  `;
+  errorElement.classList.remove("hidden");
   errorElement.innerHTML = errMessage;
-  document.querySelector(".err__message").addEventListener("click", function () {
-    errorElement.innerHTML = " ";
-   
-  });
- 
+  document
+    .querySelector(".close-error-message")
+    .addEventListener("click", function () {
+      errorElement.classList.add("hidden");
+    });
 };
 
 const createUserInitials = function (acca) {
@@ -176,17 +185,15 @@ let currentInlogedUser;
 
 btnLogin.addEventListener("click", function (e) {
   e.preventDefault();
-  
- currentInlogedUser = accounts.find(
+
+  currentInlogedUser = accounts.find(
     (acc) => acc.username === inputLoginUsername.value
   );
   if (!currentInlogedUser) {
-  
     errorMessage(["Invalid username"]);
   } else if (currentInlogedUser.pin !== Number(inputLoginPin.value)) {
-  
     errorMessage(["Invalid PIN"]);
-  }else {
+  } else {
     errorElement.textContent = " ";
     currentInlogedUser?.pin === Number(inputLoginPin.value);
     labelWelcome.textContent = `Welcome back: ${
@@ -195,14 +202,9 @@ btnLogin.addEventListener("click", function (e) {
     containerApp.style.opacity = 100;
     inputLoginUsername.value = inputLoginPin.value = "";
     inputLoginPin.blur();
-    
-    
-  
-    updateUI(currentInlogedUser);
-  } 
- 
 
- 
+    updateUI(currentInlogedUser);
+  }
 });
 
 const updateUI = (account) => {
@@ -219,9 +221,8 @@ btnTransfer.addEventListener("click", function (e) {
   const reciverAcc = accounts.find(
     (acc) => acc.username === inputTransferTo.value
   );
-  
-  inputTransferTo.value = inputTransferAmount.value = " ";
 
+  inputTransferTo.value = inputTransferAmount.value = " ";
 
   if (
     amount > 0 &&
@@ -229,15 +230,12 @@ btnTransfer.addEventListener("click", function (e) {
     currentInlogedUser.balance >= amount &&
     reciverAcc?.username !== currentInlogedUser.username
   ) {
-
     currentInlogedUser.movements.push(-amount);
     reciverAcc.movements.push(amount);
 
-  
     updateUI(currentInlogedUser);
   }
 });
-
 
 btnClose.addEventListener("click", function (e) {
   e.preventDefault();
@@ -245,13 +243,12 @@ btnClose.addEventListener("click", function (e) {
     inputCloseUsername.value === currentInlogedUser.username &&
     Number(inputClosePin.value) === currentInlogedUser.pin
   ) {
-   
     const index = accounts.findIndex(
       (acc) => acc.username === currentInlogedUser.username
     );
     console.log(index);
-    accounts.splice(index, 1); 
-    containerApp.style.opacity = 0; 
+    accounts.splice(index, 1);
+    containerApp.style.opacity = 0;
   }
   inputCloseUsername.value = inputClosePin.value = " ";
 });
@@ -263,9 +260,8 @@ btnLoan.addEventListener("click", function (e) {
     amount > 0 &&
     currentInlogedUser.movements.some((mov) => mov >= amount * 0.1)
   ) {
-    
     currentInlogedUser.movements.push(amount);
- 
+
     updateUI(currentInlogedUser);
   }
   inputLoanAmount.value = " ";
@@ -275,5 +271,5 @@ let sorted = false;
 btnSort.addEventListener("click", function (e) {
   e.preventDefault();
   displayMovements(currentInlogedUser.movements, !sorted);
-  sorted = !sorted; 
+  sorted = !sorted;
 });
