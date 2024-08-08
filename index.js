@@ -108,21 +108,14 @@ btnCreate.addEventListener("click", function () {
     </div >
   `;
   containerCreateCard.classList.remove("hidden");
-  overlay.classList.remove('hidden');
+  overlay.classList.remove("hidden");
   containerCreateCard.innerHTML = modalBox;
-  
-
 
   document.querySelector(".close-modal").addEventListener("click", function () {
-    containerCreateCard.classList.add('hidden');
-    overlay.classList.add('hidden');
-    
-   });
-  
+    containerCreateCard.classList.add("hidden");
+    overlay.classList.add("hidden");
+  });
 });
-
-
-
 
 const calcBalance = (account) => {
   account.balance = account.movements.reduce((acc, curMov) => acc + curMov, 0);
@@ -156,17 +149,39 @@ const displaySummeryInterest = (account) => {
   labelSumInterest.textContent = `${interest}`;
 };
 
-const errorMessage = (message) => {
-  const errMessage = `<article class="error-container"><p class= "err__message" > ${message}</P>
-  <button class="close-error-message">X</button></article>
-  `;
-  errorElement.classList.remove("hidden");
-  errorElement.innerHTML = errMessage;
-  document
-    .querySelector(".close-error-message")
-    .addEventListener("click", function () {
-      errorElement.classList.add("hidden");
-    });
+const setError = (element, message) => {
+  const inputControl = element.parentElement;
+  const errorDisplay = inputControl.querySelector(".error");
+  errorDisplay.innerText = message;
+  inputControl.classList.add("error");
+  inputControl.classList.remove("success");
+};
+
+const setSuccess = (element) => {
+  const inputControl = element.parentElement;
+  const errorDisplay = inputControl.querySelector(".error");
+  errorDisplay.innerText = " ";
+  inputControl.classList.add("success");
+  inputControl.classList.remove("error");
+};
+
+const validateInputs = () => {
+  const usernameValue = inputLoginUsername.value.trim();
+  const userPinValue = inputLoginPin.value.trim();
+
+  if (usernameValue === "") {
+    setError(inputLoginUsername, "Username is required.");
+  }else {
+    setSuccess(inputLoginUsername);
+  }
+
+  if (userPinValue === "") {
+    setError(inputLoginPin, "Password is required.");
+  } else if (userPinValue.length < 4) {
+    setError(inputLoginPin, "Password must be at least 4 charachter.");
+  } else {
+    setSuccess(inputLoginPin);
+  }
 };
 
 const createUserInitials = function (acca) {
@@ -185,26 +200,29 @@ let currentInlogedUser;
 
 btnLogin.addEventListener("click", function (e) {
   e.preventDefault();
+  validateInputs();
+  const isUsernameValid = inputLoginUsername.parentElement.classList.contains("success");
+  const isPinValid = inputLoginPin.parentElement.classList.contains("success");
+
+  if (!isUsernameValid || !isPinValid) {
+    return; 
+  }
 
   currentInlogedUser = accounts.find(
     (acc) => acc.username === inputLoginUsername.value
   );
-  if (!currentInlogedUser) {
-    errorMessage(["Invalid username"]);
-  } else if (currentInlogedUser.pin !== Number(inputLoginPin.value)) {
-    errorMessage(["Invalid PIN"]);
-  } else {
-    errorElement.textContent = " ";
-    currentInlogedUser?.pin === Number(inputLoginPin.value);
-    labelWelcome.textContent = `Welcome back: ${
-      currentInlogedUser.owner.split(" ")[0]
-    }`;
-    containerApp.style.opacity = 100;
-    inputLoginUsername.value = inputLoginPin.value = "";
-    inputLoginPin.blur();
 
-    updateUI(currentInlogedUser);
-  }
+  currentInlogedUser?.pin === Number(inputLoginPin.value);
+  labelWelcome.textContent = `Welcome back: ${
+    currentInlogedUser.owner.split(" ")[0]
+  }`;
+ 
+  containerApp.style.opacity = 100;
+  inputLoginUsername.value = inputLoginPin.value = "";
+  inputLoginUsername.style.border = inputLoginPin.style.border = "none";
+  inputLoginPin.blur();
+
+  updateUI(currentInlogedUser);
 });
 
 const updateUI = (account) => {

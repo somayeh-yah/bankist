@@ -169,6 +169,15 @@ input[type="date"] {
   margin-right: 57px;
 }
 
+.login :focus {
+  outline: none;
+  border: 1px solid #ccc;
+}
+
+.login::placeholder {
+  color: #bbb;
+}
+
 .login__input {
   border: none;
   padding: 0.5rem 2rem;
@@ -183,28 +192,32 @@ input[type="date"] {
   transition: all 0.3s;
 }
 
-.login__input:focus {
-  outline: none;
-  border: 1px solid #ccc;
+.login .success input{
+  border-color: rgb(118, 223, 118);
 }
 
-.login__input::placeholder {
-  color: #bbb;
+.login .error input{
+  border-color: red;
 }
 
-.login__btn {
+.login .error {
+  color: red;
+  font-size: 9px;
+  height: 13px;
+}
+
+.btn {
   border: none;
   background: none;
   font-size: 2.2rem;
   color: inherit;
   cursor: pointer;
   transition: all 0.3s;
+  opacity: .8;
 }
 
-.login__btn:hover,
-.login__btn:focus,
-.btn--sort:hover,
-.btn--sort:focus {
+.btn:hover,
+.btn:focus{
   outline: none;
   color: #777;
 }
