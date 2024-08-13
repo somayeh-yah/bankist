@@ -1,9 +1,12 @@
-# Bank application build with Javascript
+# Bank application build with Javascript, HTML and CSS
+this is a bank web-application where user needs to log in with a username and a pin code to access their account. the  is stored in out script file.
+I have created a username function that adds a username property to each user account in our user data. This function gives every user an unique username property to every account.
+
 
 #Features
-
-- close account
-- log in
-- View transaction history
-- Check account balance
+- close account: it allows uder to close their account.
+- log in: it allows user to log in with a username and a pin-code. 
+- View transaction history.
+- Check account balance: it allows user to get a owerwie over their current balance. 
 - Transfer money between accounts
+- Order a credit card: a form where user can order a credit-card
