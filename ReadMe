@@ -1,6 +1,8 @@
-# Bank application build with Javascript, HTML and CSS
-this is a bank web-application where user needs to log in with a username and a pin code to access their account. the  is stored in out script file.
-I have created a username function that adds a username property to each user account in our user data. This function gives every user an unique username property to every account.
+# Bank application build with Javascript, HTML and CSS 
+this is a bank web-application where user needs to log in with a username and a pin code to access their account. 
+The user data is stored in out script file.
+I have created a username function that adds a username property to each user account in our user data. 
+This function gives every user an unique username property to every account.
 
 
 #Features
